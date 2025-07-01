@@ -1,8 +1,9 @@
-﻿#define _CRT_SECURE_NO_WARNINGS  // Отключаем предупреждения о небезопасных функциях
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+
 typedef struct {
     int index;
     int value;
@@ -20,18 +21,25 @@ int linear_search(int arr[], int size, int target) {
 
 // 2. Поиск всех вхождений
 void search_all_occurrences(int arr[], int size, int target, FILE* output_file) {
-    fprintf(output_file, "Элемент %d найден на позициях: ", target);
+    char buffer[1024];
+    sprintf(buffer, "Элемент %d найден на позициях: ", target);
     int found = 0;
     for (int i = 0; i < size; i++) {
         if (arr[i] == target) {
-            fprintf(output_file, "%d ", i);
+            char temp[20];
+            sprintf(temp, "%d ", i);
+            strcat(buffer, temp);
             found = 1;
         }
     }
     if (!found) {
-        fprintf(output_file, "не найден.");
+        strcat(buffer, "не найден.");
     }
-    fprintf(output_file, "\n");
+    strcat(buffer, "\n");
+
+    // Вывод в файл и консоль
+    fprintf(output_file, "%s", buffer);
+    printf("%s", buffer);
 }
 
 // 3. Поиск с использованием указателей
@@ -39,7 +47,7 @@ int pointer_search(int* arr, int size, int target) {
     int* end = arr + size;
     for (int* ptr = arr; ptr < end; ptr++) {
         if (*ptr == target) {
-            return (int)(ptr - arr);  // Явное приведение типа для устранения предупреждения
+            return (int)(ptr - arr);
         }
     }
     return -1;
@@ -105,6 +113,13 @@ int main() {
 
     printf("Массив успешно загружен (%d элементов)\n", size);
 
+    // Вывод массива в консоль
+    printf("Исходный массив:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n\n");
+
     int target;
     printf("Введите число для поиска: ");
     if (scanf_s("%d", &target) != 1) {
@@ -143,45 +158,65 @@ int main() {
     case 1: {
         int result = linear_search(arr, size, target);
         if (result != -1) {
-            fprintf(output_file, "Линейный поиск: элемент %d найден на позиции %d.\n", target, result);
+            char message[100];
+            sprintf(message, "Линейный поиск: элемент %d найден на позиции %d.\n", target, result);
+            fprintf(output_file, "%s", message);
+            printf("%s", message);
         }
         else {
-            fprintf(output_file, "Линейный поиск: элемент %d не найден.\n", target);
+            char message[100];
+            sprintf(message, "Линейный поиск: элемент %d не найден.\n", target);
+            fprintf(output_file, "%s", message);
+            printf("%s", message);
         }
         break;
     }
     case 2:
         fprintf(output_file, "Результат поиска всех вхождений:\n");
+        printf("Результат поиска всех вхождений:\n");
         search_all_occurrences(arr, size, target, output_file);
         break;
     case 3: {
         int result = pointer_search(arr, size, target);
         if (result != -1) {
-            fprintf(output_file, "Поиск с указателями: элемент %d найден на позиции %d.\n", target, result);
+            char message[100];
+            sprintf(message, "Поиск с указателями: элемент %d найден на позиции %d.\n", target, result);
+            fprintf(output_file, "%s", message);
+            printf("%s", message);
         }
         else {
-            fprintf(output_file, "Поиск с указателями: элемент %d не найден.\n", target);
+            char message[100];
+            sprintf(message, "Поиск с указателями: элемент %d не найден.\n", target);
+            fprintf(output_file, "%s", message);
+            printf("%s", message);
         }
         break;
     }
     case 4: {
         SearchResult result = search_with_struct(arr, size, target);
         if (result.index != -1) {
-            fprintf(output_file, "Поиск с структурой: элемент %d найден на позиции %d.\n", result.value, result.index);
+            char message[100];
+            sprintf(message, "Поиск с структурой: элемент %d найден на позиции %d.\n", result.value, result.index);
+            fprintf(output_file, "%s", message);
+            printf("%s", message);
         }
         else {
-            fprintf(output_file, "Поиск с структурой: элемент %d не найден.\n", target);
+            char message[100];
+            sprintf(message, "Поиск с структурой: элемент %d не найден.\n", target);
+            fprintf(output_file, "%s", message);
+            printf("%s", message);
         }
         break;
     }
     default:
         fprintf(output_file, "Неверный выбор метода поиска.\n");
+        printf("Неверный выбор метода поиска.\n");
     }
 
     fclose(output_file);
     free(arr);
 
-    printf("\nРезультаты поиска сохранены в файл 'search_results.txt'.\n");
+    printf("\nРезультаты поиска также сохранены в файл 'search_results.txt'.\n");
 
     return 0;
 }
